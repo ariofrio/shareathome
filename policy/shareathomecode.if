@@ -1,0 +1,36 @@
+
+## <summary>policy for shareathomecode</summary>
+
+########################################
+## <summary>
+##	Execute sandbox in the shareathomecode_t domain, and
+##	allow the specified role the shareathomecode_t domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to transition.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	The role to be allowed the shareathomecode_t domain.
+##	</summary>
+## </param>
+#
+interface(`shareathomecode_transition',`
+	gen_require(`
+		type shareathomecode_t;
+		type shareathomecode_client_t;
+	')
+
+	allow $1 shareathomecode_t:process { signal_perms transition };
+	dontaudit $1 shareathomecode_t:process { noatsecure siginh rlimitinh };
+	role $2 types shareathomecode_t;
+	role $2 types shareathomecode_client_t;
+
+	allow shareathomecode_t $1:process { sigchld signull };
+	allow shareathomecode_t $1:fifo_file rw_inherited_fifo_file_perms;
+	allow shareathomecode_client_t $1:process { sigchld signull };
+	allow shareathomecode_client_t $1:fifo_file rw_inherited_fifo_file_perms;
+')
+
